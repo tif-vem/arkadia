@@ -172,7 +172,9 @@ game.ball = {
             this.y = 0;
             this.dy = this.velocity;
         } else if (ballBottom > worldBottom) {
-            console.log("Game Over");
+            game.running = false;
+            alert("Game Over");
+            window.location.reload();
         }
     },
     bumpBlock(block) {
