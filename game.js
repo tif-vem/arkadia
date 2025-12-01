@@ -55,6 +55,9 @@ create() {
     for (let row = 0; row < this.rows; row++) {
         for (let col = 0; col < this.cols; col++) {
             this.blocks.push({
+                active: true,
+                width: 60,
+                height: 20,
                 x: 64 * col + 65,
                 y: 24 * row + 35,
             });
@@ -62,14 +65,14 @@ create() {
     }
 },
 update() {
-    this.platform.move();
-    this.ball.move();
     this.collideBlocks();
     this.collidePlatform();
+    this.platform.move();
+    this.ball.move();
 },
 collideBlocks() {
     for (let block of this.blocks) {
-        if (this.ball.collide(block)) {
+        if (block.active && this.ball.collide(block)) {
             this.ball.bumpBlock(block);
         }
     }
@@ -95,7 +98,9 @@ render() {
 },
 renderBlocks() {
     for (let block of this.blocks) {
+        if (block.active) {
         this.ctx.drawImage(this.sprites.block, block.x, block.y);
+        }
     }
 }, 
 start: function() {
@@ -134,7 +139,7 @@ game.ball = {
         let y = this.y + this.dy;
 
         if (x + this.width > element.x &&
-            x < element.xc + element.width &&
+            x < element.x + element.width &&
             y + this.height > element.y &&
             y < element.y + element.height) {
             return true;
@@ -143,9 +148,7 @@ game.ball = {
     },
     bumpBlock(block) {
         this.dy *= -1;
-    },
-    bumpBlock(block) {
-        this.dy *= -1;
+        block.active = false;
     },
     bumpPlatform(platform) {
         this.dy *= -1;
